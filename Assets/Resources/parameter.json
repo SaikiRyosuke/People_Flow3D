@@ -1,0 +1,21 @@
+{
+	"Lx": 100,
+	"Ly": 20,
+	"Lz": 20,
+	"phiDivision": 50,
+	"generateRate":0.5,
+	"numberOfPeople": 500,
+	"tau": 0.5,
+	"v0": 2,
+	"xiAmp": 1,
+	
+	"Aalpha_same": 1,
+	"Aalpha_opp":  2,
+	"radius": 0.3,
+	"BAlpha": 4,
+	"lambdaAlpha": 0.3,
+	"k": 5,
+	"kappa": 5,
+	"CAlpha": 0,
+	"d_dir": 2
+}

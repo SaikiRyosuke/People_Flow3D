@@ -27,7 +27,8 @@ public class People : MonoBehaviour
 	private Vector3 e0 = new Vector3(0,0,0);
 	private float xiAmp = 1f; //
 	
-	private float Aalpha =1f; 	//Aalpha: the altitude of soc-force
+	private float Aalpha_same = 0.1f; 	//Aalpha: the altitude of soc-force
+	private float Aalpha_opp = 1f; 	//Aalpha: the altitude of soc-force
 	private float radius = 0.5f; //radius: the radius of the person's body
 	private float BAlpha = 0.1f; //bAlpha: decrease rate in socio-phychological force
 	private float lambdaAlpha = 0.5f; //lambdaAlpha: description of anisotropic force
@@ -38,28 +39,29 @@ public class People : MonoBehaviour
 	void Awake()
 	{
 		pos = this.transform.position;
+		tau = Parameters.Instance.tau;
+		v0 = Parameters.Instance.v0;
+		Aalpha_same = Parameters.Instance.Aalpha_same;
+		Aalpha_opp = Parameters.Instance.Aalpha_opp;
+		radius = Parameters.Instance.radius;
+		BAlpha = Parameters.Instance.BAlpha;
+		lambdaAlpha = Parameters.Instance.lambdaAlpha;
+		k = Parameters.Instance.k;
+		kappa = Parameters.Instance.kappa;
+		this.gameObject.transform.localScale = this.radius * 2 * new Vector3(1,1,1);
+		
 	}
 
 	void Start()
 	{
 		type = transform.parent.gameObject.GetComponent<Parent>().type;
-		if(type == Type.A){
-			e0 = new Vector3(1,0,0);
-			Recorder.Instance.typeRecordArray[3*id+1] = "A";
-			Recorder.Instance.typeRecordArray[3*id+2] = "A";
-			Recorder.Instance.typeRecordArray[3*id+3] = "A";
-		}	
-		if(type == Type.B){
-			e0 = new Vector3(-1,0,0);
-			Recorder.Instance.typeRecordArray[3*id+1] = "B";
-			Recorder.Instance.typeRecordArray[3*id+2] = "B";
-			Recorder.Instance.typeRecordArray[3*id+3] = "B";
-		}	
-		velocity = v0*e0;
+
 		/*startParent = start.GetComponent<Parent>();
 		goalParent = start.GetComponent<Parent>();*/
 		gameObject.GetComponent<MeshRenderer>().enabled = false;
-		
+		if(type == Type.A)	e0 = new Vector3(1,0,0);
+		if(type == Type.B)	e0 = new Vector3(-1,0,0);
+		velocity = v0*e0;
 
 	}
 
@@ -90,14 +92,14 @@ public class People : MonoBehaviour
 		
 		pos = this.transform.position;
 
-		//目的地に到達したら削除
-		if(type == Type.A && pos.x > PeopleManager.Instance.B.transform.position.x){
-			PeopleManager.Instance.RemovePeople(this);
-			Destroy(this.gameObject);
+		//目的地に到達したら削除→周期的境界条件に変更
+		if(type == Type.A && pos.x > Parameters.Instance.Lx){
+			this.transform.position = new  Vector3(-Parameters.Instance.Lx, pos.y, pos.z);
+			this.pos = new Vector3(-Parameters.Instance.Lx, pos.y, pos.z);
 		}	
 		if(type == Type.B && pos.x < PeopleManager.Instance.A.transform.position.x){
-			PeopleManager.Instance.RemovePeople(this);
-			Destroy(this.gameObject);
+			this.transform.position = new  Vector3(Parameters.Instance.Lx, pos.y, pos.z);
+			this.pos = new Vector3(Parameters.Instance.Lx, pos.y, pos.z);
 		}	
 		
 		//物理量計算パート
@@ -118,7 +120,8 @@ public class People : MonoBehaviour
 				deltaV = Vector3.Dot(people.velocity - this.velocity, t);
 				cos_phiAlphaBeta = -Vector3.Dot(n,e);
 				// Socio-phychological Force
-				f_soc += Aalpha * Mathf.Exp((r-d)/BAlpha) * (lambdaAlpha + (1-lambdaAlpha)*(1+cos_phiAlphaBeta)/2) * n;
+				if(this.type == people.type)	f_soc += Aalpha_same * Mathf.Exp((r-d)/BAlpha) * (lambdaAlpha + (1-lambdaAlpha)*(1+cos_phiAlphaBeta)/2) * n;
+				else	f_soc += Aalpha_opp * Mathf.Exp((r-d)/BAlpha) * (lambdaAlpha + (1-lambdaAlpha)*(1+cos_phiAlphaBeta)/2) * n;
 				// physical force
 				f_ph += k* Theta(r-d) * n + kappa * Theta(r-d) * deltaV * t;
 			}
@@ -126,34 +129,33 @@ public class People : MonoBehaviour
 		}
 		//interactions from boundary(y = 10)
 		r = this.radius;
-		d = 10 - this.pos.y;
+		d = Parameters.Instance.Ly - this.pos.y;
 		n = new Vector3(0,-1,0);
 		t = Vector3.ProjectOnPlane(- this.velocity, n);
-		f_b_soc = Aalpha * Mathf.Exp((r-d)/BAlpha) * n;
-		// if(float.IsNaN(Vector3.Dot(f_b_soc, new Vector3(1,1,1)))) Debug.LogWarning("y=10");
+		f_b_soc = Aalpha_opp * Mathf.Exp((r-d)/BAlpha) * n;
 		f_b_ph = k* Theta(r-d) * n + kappa * Theta(r-d) * t;
 		//interactions from boundary(y = -10)
 		r = this.radius;
-		d = this.pos.y + 10;
+		d = this.pos.y + Parameters.Instance.Ly;
 		n = new Vector3(0,1,0);
 		t = Vector3.ProjectOnPlane(- this.velocity, n);
-		f_b_soc += Aalpha * Mathf.Exp((r-d)/BAlpha) * n;
+		f_b_soc += Aalpha_opp * Mathf.Exp((r-d)/BAlpha) * n;
 		// if(float.IsNaN(Vector3.Dot(f_b_soc, new Vector3(1,1,1)))) Debug.LogWarning("y=-10");
 		f_b_ph += k* Theta(r-d) * n + kappa * Theta(r-d) * t;
 		//interactions from boundary (z = 10)
 		r = this.radius;
-		d = 10 - this.pos.z;
+		d = Parameters.Instance.Lz - this.pos.z;
 		n = new Vector3(0,0,-1);
 		t = Vector3.ProjectOnPlane(- this.velocity, n);
-		f_b_soc += Aalpha * Mathf.Exp((r-d)/BAlpha) * n;
+		f_b_soc += Aalpha_opp * Mathf.Exp((r-d)/BAlpha) * n;
 		// if(float.IsNaN(Vector3.Dot(f_b_soc, new Vector3(1,1,1)))) Debug.LogWarning("z=10");
 		f_b_ph += k* Theta(r-d) * n + kappa * Theta(r-d) * t;
 		//interactions from boundary (z = -10)
 		r = this.radius;
-		d = this.pos.z + 10;
+		d = this.pos.z + Parameters.Instance.Lz;
 		n = new Vector3(0,0,1);
 		t = Vector3.ProjectOnPlane(- this.velocity, n);
-		f_b_soc += Aalpha * Mathf.Exp((r-d)/BAlpha) * n;
+		f_b_soc += Aalpha_opp * Mathf.Exp((r-d)/BAlpha) * n;
 		// if(float.IsNaN(Vector3.Dot(f_b_soc, new Vector3(1,1,1)))) Debug.LogWarning("z=-10");
 		f_b_ph += k* Theta(r-d) * n + kappa * Theta(r-d) * t;
 		
@@ -163,7 +165,7 @@ public class People : MonoBehaviour
 		// if(float.IsNaN(Vector3.Dot(f_b_ph,new Vector3(1,1,1))))	Debug.Log("f_b_ph calc is wrong");	
 		
 		//オイラー法による速度の計算
-		velocity += ( (v0*e0 + xi - velocity)/tau + Vector3.ClampMagnitude(f_soc + f_ph + f_b_soc + f_b_ph, 10f) )* Time.deltaTime;
+		velocity += ( (v0*e0 + xi - velocity)/tau + Vector3.ClampMagnitude(f_soc + f_ph + f_b_soc + f_b_ph, 100f) )* Time.deltaTime;
 		pos += velocity * Time.deltaTime;
 		
 		//位置を記録する。

@@ -28,13 +28,14 @@ public class PeopleManager : MonoBehaviour
 		for(int i = 0; i < B.transform.childCount; i++){
 			peopleList.Add(B.transform.GetChild(i).GetComponent<People>());
 			B.transform.GetChild(i).GetComponent<People>().id = peopleCount++;
-
 		}
+		
+		
     }
 	
 	void Start()
 	{
-		
+		A.SetActive(true);	B.SetActive(true);
 	}
 
     // Update is called once per frame
