@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum Mode
 {
@@ -18,24 +20,19 @@ public class PeopleManager : MonoBehaviour
 	public Mode mode = Mode.Off;
 	public float wallMoveSpeed = 0.06f;
 	public int frameCount = 0;
+	
+	public Text phiText;
+	public Slider timeScaleSlider;
+	public Text timeScaleText;
     void Awake()
     {
         Instance = this;
-		for(int i = 0; i < A.transform.childCount; i++){
-			peopleList.Add(A.transform.GetChild(i).GetComponent<People>());
-			A.transform.GetChild(i).GetComponent<People>().id = peopleCount++;
-		}
-		for(int i = 0; i < B.transform.childCount; i++){
-			peopleList.Add(B.transform.GetChild(i).GetComponent<People>());
-			B.transform.GetChild(i).GetComponent<People>().id = peopleCount++;
-		}
-		
-		
     }
 	
 	void Start()
 	{
 		A.SetActive(true);	B.SetActive(true);
+		timeScaleSlider.value = 1f;
 	}
 
     // Update is called once per frame
@@ -92,5 +89,16 @@ public class PeopleManager : MonoBehaviour
 		if(Input.GetKey(KeyCode.U))	return 1f;
 		if(Input.GetKey(KeyCode.I))	return -1f;
 		else return 0f;
+	}
+	
+	public void ChangeTimeScale()
+	{
+		Time.timeScale = timeScaleSlider.value;
+		timeScaleText.text = Time.timeScale.ToString();
+	}
+	
+	public void ResetSim()
+	{
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 }
