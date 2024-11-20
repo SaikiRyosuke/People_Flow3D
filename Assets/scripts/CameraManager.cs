@@ -10,8 +10,8 @@ public class CameraManager : MonoBehaviour
 	Vector3 up = new Vector3(0,1,0);
 	public float turnSideSpeed = 2f;
 	public float turnUpSpeed = 4f;
-	public float moveSpeed = 0.08f;
-	public float jumpSpeed = 0.1f;
+	public float moveSpeed = 80f;
+	public float jumpSpeed = 30f;
 	float mouseX, mouseY;
 	Quaternion originalQua;
 
@@ -37,11 +37,11 @@ public class CameraManager : MonoBehaviour
 		//カメラの向きを変える処理。
 		this.transform.rotation =quaternionX * quaternionY * this.transform.rotation;
 		//カメラの位置を変える処理。
-		if(Input.GetKey(KeyCode.W))	this.transform.position += direction * moveSpeed;
-		if(Input.GetKey(KeyCode.A))	this.transform.position += -right * moveSpeed;
-		if(Input.GetKey(KeyCode.S))	this.transform.position += -direction * moveSpeed;
-		if(Input.GetKey(KeyCode.D))	this.transform.position += right * moveSpeed;
-		if(Input.GetKey(KeyCode.Space)) this.transform.position += Vector3.up * jumpSpeed;
+		if(Input.GetKey(KeyCode.W))	this.transform.position += direction * moveSpeed * Time.deltaTime;
+		if(Input.GetKey(KeyCode.A))	this.transform.position += -right * moveSpeed * Time.deltaTime;
+		if(Input.GetKey(KeyCode.S))	this.transform.position += -direction * moveSpeed * Time.deltaTime;
+		if(Input.GetKey(KeyCode.D))	this.transform.position += right * moveSpeed * Time.deltaTime;
+		if(Input.GetKey(KeyCode.Space)) this.transform.position += Vector3.up * jumpSpeed * Time.deltaTime;
 		
 		if(Input.GetKeyDown(KeyCode.LeftShift)){
 			mouseX = Input.GetAxis("Mouse X");

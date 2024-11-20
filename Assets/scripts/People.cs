@@ -7,7 +7,7 @@ public class People : MonoBehaviour
 {
 	public int id = 0;
 	Parent startParent, goalParent;
-	Type type;
+	public Type type;
 	public Vector3 velocity = new Vector3();
 	Vector3 f_soc = new Vector3(0,0,0);
 	Vector3 f_ph = new Vector3(0,0,0);
@@ -169,12 +169,12 @@ public class People : MonoBehaviour
 		pos += velocity * Time.deltaTime;
 		
 		//位置を記録する。
-		if(id*3 < Recorder.Instance.positionRecordArray.Length){
-			Recorder.Instance.positionRecordArray[PeopleManager.Instance.frameCount,id*3+1] = pos.x.ToString();
-			Recorder.Instance.positionRecordArray[PeopleManager.Instance.frameCount,id*3+2] = pos.y.ToString();
-			Recorder.Instance.positionRecordArray[PeopleManager.Instance.frameCount,id*3+3] = pos.z.ToString();
+		// if(id*3 < Recorder.Instance.positionRecordArray.Length){
+			// Recorder.Instance.positionRecordArray[PeopleManager.Instance.frameCount,id*3+1] = pos.x.ToString();
+			// Recorder.Instance.positionRecordArray[PeopleManager.Instance.frameCount,id*3+2] = pos.y.ToString();
+			// Recorder.Instance.positionRecordArray[PeopleManager.Instance.frameCount,id*3+3] = pos.z.ToString();
 			
-		}
+		// }
 		this.transform.position = pos;
 	}
 
