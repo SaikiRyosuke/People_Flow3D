@@ -1,8 +1,8 @@
 {
-	"Lx": 100,
+	"Lx": 50,
 	"Ly": 20,
 	"Lz": 20,
-	"phiDivision": 50,
+	"phiDivision": 10,
 	"generateRate":0.5,
 	"numberOfPeople": 500,
 	"tau": 0.5,
@@ -11,7 +11,7 @@
 	
 	"Aalpha_same": 1,
 	"Aalpha_opp":  2,
-	"radius": 0.3,
+	"radius": 1,
 	"BAlpha": 4,
 	"lambdaAlpha": 0.3,
 	"k": 5,

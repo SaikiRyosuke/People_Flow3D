@@ -843,7 +843,7 @@ MonoBehaviour:
   mode: 3
   wallMoveSpeed: 0.06
   phi: 0
-  phiText: {fileID: 1996101985}
+  phiText: {fileID: 597480397}
   timeScaleSlider: {fileID: 1337637500}
   timeScaleText: {fileID: 883537150}
   phiPlate: {fileID: 8543380851463621016, guid: 57c50912978ab6743a72756ac1a53d4e, type: 3}
@@ -1114,13 +1114,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: 150, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -120}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -97,7 +97,7 @@ public class People : MonoBehaviour
 			this.transform.position = new  Vector3(-Parameters.Instance.Lx, pos.y, pos.z);
 			this.pos = new Vector3(-Parameters.Instance.Lx, pos.y, pos.z);
 		}	
-		if(type == Type.B && pos.x < PeopleManager.Instance.A.transform.position.x){
+		else if(type == Type.B && pos.x < -Parameters.Instance.Lx){
 			this.transform.position = new  Vector3(Parameters.Instance.Lx, pos.y, pos.z);
 			this.pos = new Vector3(Parameters.Instance.Lx, pos.y, pos.z);
 		}	

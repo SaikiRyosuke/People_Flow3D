@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System;
 
 public enum Mode
 {
@@ -95,6 +96,9 @@ public class PeopleManager : MonoBehaviour
 			Barea.SetActive(true);
 		}
 		
+		Array.Clear(npArray, 0, npArray.Length);
+		Array.Clear(nmArray, 0, nmArray.Length);
+		
 		foreach(People people in peopleList){
 			int i = (int) ((people.pos.y + Ly) * phiDivision / 2 / Ly);
 			int j = (int) ((people.pos.z + Lz) * phiDivision / 2 / Lz);
@@ -108,23 +112,23 @@ public class PeopleManager : MonoBehaviour
 		for(int i = 0; i < phiDivision; i++){
 			for(int j = 0; j < phiDivision; j++){
 				int np = npArray[i,j]; int nm = nmArray[i,j];
-				if(np == 0 || nm == 0){
+				if(np == 0 && nm == 0){
 					phiArray[i,j] = 5;
 					phiPlateArray[i,j].GetComponent<Renderer>().material.color = new Color(0,0,0,1);
-				}	
-				else{
-					phiArray[i,j] = (np - nm) / (np + nm);
+				}else{
+					phiArray[i,j] = (float)(np - nm) / (np + nm);
 					count++; sum += Mathf.Abs(phiArray[i,j]);
 					//ここに色を変更する処理を加える
 					Color phiColor = new Color(0,0,0,1);
-					if(phiArray[i,j] >= 0)	phiColor = new Color(1,1-phiArray[i,j], 1-phiArray[i,j],1);
-					else if(phiArray[i,j] <= 0) phiColor = new Color(1-phiArray[i,j], 1-phiArray[i,j], 1,1);
+					if(phiArray[i,j] >= 0)	phiColor = new Color(1f,1f-phiArray[i,j], 1f-phiArray[i,j],1f);
+					else if(phiArray[i,j] <= 0) phiColor = new Color(1f+phiArray[i,j], 1f+phiArray[i,j],1f, 1f);
 					phiPlateArray[i,j].GetComponent<Renderer>().material.color = phiColor;
 				} 
 			}
 		}
 		phi = sum / count;
-		Debug.Log(phi);
+		phiText.text = phi.ToString();
+		
     }
 	
 	public void AddPeople(People people)
